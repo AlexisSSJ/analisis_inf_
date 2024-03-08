@@ -1,10 +1,3 @@
-library(tidyverse)
-library(tsibble)
-
-library(stringr) # For regular expression functions
-library(lubridate)
-library(readr)
-
 
 pob_act <- read_csv("data/Indicadores20240306174031- Población_activa.csv",
                     skip = 4) %>% 
@@ -13,7 +6,9 @@ pob_act <- read_csv("data/Indicadores20240306174031- Población_activa.csv",
   select(-Periodos,value = pob_act )
   
 
+cache("pob_act")
 
+pob
 ##
 ## EXTRAER POBLACIÓN TOTAL MÉXICO
 ##
