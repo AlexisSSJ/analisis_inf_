@@ -126,6 +126,54 @@ IPGN <- read_excel("data/IPGN.xlsx") %>% mutate(
 
 
 cache("IPGN")
+###################################3
+
+
+
+
+IPC <- read_csv('data/Datos históricos S&P_BMV IPC.csv') %>% mutate(
+  Fecha = dmy(Fecha), 
+  date = yearmonth(Fecha )
+) %>% 
+  filter(Fecha < "2024-01-01") %>% 
+  group_by(date) %>% 
+  dplyr::summarise(
+    close_monthly_mean_IPC = mean(Cierre)
+  )
+
+cache("IPC")
+
+SP500 <- read_csv("data/Datos históricos S&P 500.csv")  %>% 
+  mutate(
+  diff_cierre = Cierre - lag(Cierre),
+  diff2_cierre = diff_cierre - lag(diff_cierre),
+  Fecha = dmy(Fecha), 
+  date = yearmonth(Fecha )
+) %>% 
+  filter(Fecha < "2024-01-01") %>% 
+  group_by(date) %>% 
+  dplyr::summarise(
+    close_monthly_mean_SP500 = mean(Cierre),
+    close_monthly_mean_variation_SP500 = mean(diff_cierre),
+    diff2_mean_SP500 = mean(diff_cierre),
+  )
+
+cache("SP500")
+
+oro <- read_csv("data/Datos históricos Futuros oro.csv")  %>% 
+  mutate(
+  diff_cierre = Cierre - lag(Cierre),
+  Fecha = dmy(Fecha), 
+  date = yearmonth(Fecha )
+) %>% 
+  filter(Fecha < "2024-01-01") %>% 
+  group_by(date) %>% 
+  dplyr::summarise(
+    var_prom_oro_mensual = mean(diff_cierre)
+  )
+
+
+cache("oro")
 
 df_ts <-  pob_total %>% 
   rbind(pob_act) %>% 
@@ -138,9 +186,6 @@ cache("df_ts",depends = c("dolar_tc_prom","inflation_data","pob_total","pob_act"
 
 
 
-tib_df <- df_ts %>% 
-  pivot_wider(values_from=value, names_from=indice) %>% 
-  as_tibble() %>% filter(between(year(date), 2017, 2023))
 
 
 
@@ -162,6 +207,20 @@ tib_df <- df_ts %>%
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
 
 
